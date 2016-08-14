@@ -1,0 +1,23 @@
+---
+- name: Set sysctl | FreeBSD
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    state: present
+    reload: yes
+  with_items: "{{ sysctl }}"
+  when: item.unset is not defined
+  tags:
+    - set_sysctl
+
+- name: Unset sysctl | FreeBSD
+  sysctl:
+    name: "{{ item.name }}"
+    sysctl_set: no
+    state: absent
+  with_items: "{{ sysctl }}"
+  when: item.unset is defined
+  tags:
+    - set_sysctl
+

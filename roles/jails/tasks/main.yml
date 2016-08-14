@@ -1,0 +1,6 @@
+---
+- include: users.yml
+- include: permissions.yml
+- include: directories.yml
+- include: config.yml
+- include: control.yml

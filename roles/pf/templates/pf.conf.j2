@@ -1,0 +1,63 @@
+# pf.conf managed by Ansible
+
+# Version: {{ pf_config_version }}
+
+###
+### Macros
+###
+
+{% for key in pf_settings %}
+{% if key.type == "macro" %}
+{{ key.line }}
+{% endif %}
+{% endfor %}
+
+###
+### Settings
+###
+
+{% for key in pf_settings %}
+{% if key.type == "setting" %}
+{{ key.line }}
+{% endif %}
+{% endfor %}
+
+###
+### Tables
+###
+
+{% for key in pf_settings %}
+{% if key.type == "table" %}
+{{ key.line }}
+{% endif %}
+{% endfor %}
+
+###
+### Nat
+###
+
+{% for key in pf_settings %}
+{% if key.type == "nat" %}
+{{ key.line }}
+{% endif %}
+{% endfor %}
+
+###
+### RDR
+###
+
+{% for key in pf_settings %}
+{% if key.type == "rdr" %}
+{{ key.line }}
+{% endif %}
+{% endfor %}
+
+###
+### Rules
+###
+
+{% for key in pf_settings %}
+{% if key.type == "rule" %}
+{{ key.line }}
+{% endif %}
+{% endfor %}

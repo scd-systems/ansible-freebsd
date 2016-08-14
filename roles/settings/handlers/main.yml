@@ -1,0 +1,5 @@
+---
+- name: reload network
+  service:
+    name: netif
+    state: restarted

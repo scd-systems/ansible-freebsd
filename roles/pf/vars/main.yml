@@ -1,0 +1,33 @@
+---
+pf_config_version: 20160728.01
+
+ext_if: em0
+int_if: em0
+lo0_if: lo0
+lo1_if: lo1
+
+pf_settings:
+  - { type: macro, line: 'ext_if="{{ ext_if }}"' }
+  - { type: macro, line: 'int_if="{{ int_if }}"' }
+  - { type: macro, line: 'lo0_if="{{ lo0_if }}"' }
+  - { type: macro, line: 'lo1_if="{{ lo1_if }}"' }
+  - { type: table, line: 'table <LAN> const { 10.0/16 }' }
+  - { type: table, line: 'table <JAIL_NET> const { 127.0.1.0/24 }' }
+
+  - { type: setting, line: 'set skip on lo0' }
+  - { type: setting, line: 'scrub in' }
+
+  - { type: nat, line: "nat pass log on $ext_if from <JAIL_NET> to any -> ($ext_if)" }
+  - { type: nat, line: "nat-anchor 'ftp-proxy/*'" }
+  - { type: nat, line: "nat-anchor 'NAT_EXT_IF/*' on $ext_if" }
+  - { type: rdr, line: "rdr-anchor 'ftp-proxy/*'" }
+  - { type: rdr, line: "rdr-anchor 'RDR_INGRESS_TCP/*' on $ext_if proto tcp" }
+  - { type: rdr, line: "rdr-anchor 'RDR_INGRESS_UDP/*' on $ext_if proto udp" }
+
+#  - { type: rule, line: 'block log all' }
+  - { type: rule, line: 'antispoof quick for { $lo0_if $lo1_if }' }
+  - { type: rule, line: 'pass out log on $ext_if' }
+  - { type: rule, line: "anchor 'ftp-proxy/*'" }
+  - { type: rule, line: "anchor 'INGRESS_TCP/*' on $ext_if proto tcp to !<LAN>"}
+  - { type: rule, line: "anchor 'EGRESS_TCP/*' on $ext_if proto tcp to !<LAN>"}
+  - { type: rule, line: "anchor 'EGRESS_UDP/*' on $ext_if proto udp to !<LAN>"}

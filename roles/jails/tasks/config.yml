@@ -1,0 +1,19 @@
+---
+- name: Configure Jail.conf | FreeBSD
+  template:
+    src: roles/jails/templates/jail.conf.j2
+    dest: /etc/jail.conf
+    owner: root
+    group: 0
+    mode: 0644
+  tags:
+    - set_jail
+    - set_jail_config
+
+- name: Copy resolv.conf to Jail | FreeBSD
+  command: "cp /etc/resolv.conf {{ jail_rootpath }}/{{ item.name }}/etc"
+  with_items: "{{ jails }}"
+  when: item.enable == "yes" and item.remove != "yes"
+  tags:
+    - set_jail
+    - set_jail_config

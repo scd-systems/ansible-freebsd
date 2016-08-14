@@ -1,0 +1,5 @@
+# rc.conf.d/network managed by Ansible
+
+{% for key in rcconf_network %}
+{{ key.name }}={{ key.value }}
+{% endfor %}

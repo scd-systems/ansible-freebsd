@@ -1,0 +1,22 @@
+---
+- name: Set Hosts file | FreeBSD
+  template:
+    src: roles/settings/templates/hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: 0
+    mode: 0644
+  with_items: "{{ local_host_entry }}"
+  tags:
+    - set_hosts_file
+
+- name: Set Hostname | FreeBSD
+  file:
+    path: "/etc/rc.conf.d"
+    state: directory
+    
+- name: Set Hostname | FreeBSD
+  hostname:
+    name: "{{ hostname }}"
+  tags:
+    - set_hostname

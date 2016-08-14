@@ -1,0 +1,6 @@
+---
+- name: Configure additional rcconf | FreeBSD
+  shell: "sysrc {{ item.name }}={{ item.value }}"
+  when: config is defined
+  with_items:
+    - "{{ config }}"

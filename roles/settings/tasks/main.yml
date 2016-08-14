@@ -1,0 +1,21 @@
+---
+- include: hostname.yml
+  when: set_hostname is defined
+
+- include: rcconf.yml
+  when: set_rcconf is defined
+
+- include: rcconf_network.yml
+  when: set_rcconf_network is defined
+
+- include: rcconf_jail.yml
+  when: set_rcconf_jail is defined
+
+- include: sysctl.yml
+  when: set_sysctl is defined
+
+- include: resolvconf.yml
+  when: set_resolvconf is defined
+
+- include: timeconf.yml
+  when: set_timeconf is defined

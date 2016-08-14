@@ -1,0 +1,18 @@
+---
+- name: Bootstrap PKG | FreeBSD
+  raw: "export ASSUME_ALWAYS_YES=yes && pkg update -f"
+  ignore_errors: yes
+
+- name: Check bootstrap | FreeBSD
+  raw: pkg info python
+  ignore_errors: yes
+  register: python_installed
+
+- name: Install Python | FreeBSD
+  raw: pkg install -y python
+  when: python_installed.rc != 0
+
+- name: Create symlink to python | FreeBSD
+  raw: ln -sf /usr/local/bin/python2.7 /usr/bin/python
+  ignore_errors: yes
+  when: python_installed.rc != 0

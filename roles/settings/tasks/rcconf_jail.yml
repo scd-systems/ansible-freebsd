@@ -1,0 +1,11 @@
+---
+- name: Set Jail rcconf | FreeBSD
+  template:
+    src: roles/settings/templates/rc.conf.j2
+    dest: /etc/rc.conf
+    owner: root
+    group: 0
+    mode: 0644
+  with_items: "{{ rcconf_jail }}"
+  tags:
+    - set_rcconf_jail

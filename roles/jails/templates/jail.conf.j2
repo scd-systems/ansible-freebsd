@@ -1,0 +1,23 @@
+# jail.conf managed by Ansible
+
+exec.start = "/bin/sh /etc/rc";
+exec.stop = "/bin/sh /etc/rc.shutdown";
+exec.consolelog = "/var/log/${name}.log";
+exec.clean;
+mount.devfs;
+
+path = "{{ jail_rootpath }}/$name";
+
+{% for key in jails %}
+{% if key.remove != "yes" %}
+{{ key.name }} {
+{% if key.path is defined %}
+  path = "{{ key.path }}";
+{% endif %}
+  host.hostname = "{{ key.name }}";
+  interface = "{{ key.interface }}";
+  ip4.addr = "{{ key.ip }}";
+  persist;
+}
+{% endif %}
+{% endfor %}

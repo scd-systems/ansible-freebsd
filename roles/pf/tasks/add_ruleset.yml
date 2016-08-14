@@ -1,0 +1,6 @@
+---
+- name: Configure additional pf rules | FreeBSD
+  shell: echo "{{ item.rule }}" | sudo pfctl -a "{{ item.anchor }}/rule{{ item.number }}" -f -
+  when: ruleset is defined
+  with_items:
+    - "{{ ruleset }}"

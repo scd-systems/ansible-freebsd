@@ -1,0 +1,15 @@
+# rc.conf managed by Ansible
+
+firstboot_freebsd_update_enable=YES
+firstboot_pkgs_enable=YES
+firstboot_pkgs_list="sudo rsync virtualbox-ose-additions"
+vboxguest_enable="YES"
+vboxservice_enable="YES"
+
+sendmail_submit_enable="NO"
+sendmail_outbound_enable="NO"
+sendmail_msp_queue_enable="NO"
+
+{% for key in rcconf %}
+{{ key.name }}={{ key.value }}
+{% endfor %}

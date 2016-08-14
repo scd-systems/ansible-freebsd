@@ -1,0 +1,38 @@
+---
+- name: Configure jexec for jroot_* Accounts | FreeBSD
+  template:
+    src: roles/settings/templates/sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: 0
+    mode: 0644
+  when: item.enable == "yes" and item.remove != "yes"
+  with_items:
+    - "{{ jails }}"
+  notify:
+    - restart sshd
+  tags:
+    - set_jail
+    - set_jail_permissions
+
+- name: Configure sudo for jroot_* Accounts | FreeBSD
+  lineinfile:
+    dest: /usr/local/etc/sudoers
+    line: "jroot_{{ item.name }} ALL=(ALL) NOPASSWD: /usr/sbin/jexec {{ item.name }} /bin/sh *, /usr/sbin/jexec {{ item.name }} scp -t *"
+  when: item.enable == "yes" and item.remove != "yes"
+  with_items:
+    - "{{ jails }}"
+  tags:
+    - set_jail
+    - set_jail_permissions
+
+- name: Configure Jexec wrapper | FreeBSD
+  template:
+    src: roles/jails/templates/jansible.sh.j2
+    dest: /usr/local/bin/jansible.sh
+    owner: root
+    group: 0
+    mode: 0755
+  tags:
+    - set_jail
+    - set_jail_permissions

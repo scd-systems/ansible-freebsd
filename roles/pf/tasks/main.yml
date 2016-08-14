@@ -1,0 +1,63 @@
+---
+- name: Check file rc.conf.d/pf | FreeBSD
+  stat:
+    path: /etc/rc.conf.d/pf
+  register: file_rc_pf
+  tags: set_pf
+
+- name: Check file rc.conf.d/pflog | FreeBSD
+  stat:
+    path: /etc/rc.conf.d/pflog
+  register: file_rc_pflog
+  tags: set_pf
+
+- name: Create pf in rc.conf.d | FreeBSD
+  file:
+    path: /etc/rc.conf.d/pf
+    owner: root
+    group: 0
+    mode: 0644
+    state: touch
+  when: file_rc_pf.stat.exists != True
+  tags: set_pf
+
+- name: Create pflog in rc.conf.d | FreeBSD
+  file:
+    path: /etc/rc.conf.d/pflog
+    owner: root
+    group: 0
+    mode: 0644
+    state: touch
+  when: file_rc_pflog.stat.exists != True
+  tags: set_pf
+
+- name: Enable pf in rc.conf | FreeBSD
+  lineinfile:
+    dest: /etc/rc.conf.d/pf
+    regexp: '^pf_enable'
+    line: pf_enable="YES"
+  tags: set_pf
+  notify:
+    - restart_pf
+
+- name: Enable pflog in rc.conf | FreeBSD
+  lineinfile:
+    dest: /etc/rc.conf.d/pflog
+    regexp: '^pflog_enable'
+    line: pflog_enable="YES"
+  tags: set_pf
+  notify:
+    - restart_pflog
+
+- name: Create generic default pf.conf | FreeBSD
+  template:
+    src: roles/pf/templates/pf.conf.j2
+    dest: /etc/pf.conf
+    owner: root
+    group: 0
+    mode: 0644
+  with_items: "{{ pf_settings }}"
+  notify:
+    - reload_pf
+  tags:
+    - set_pf

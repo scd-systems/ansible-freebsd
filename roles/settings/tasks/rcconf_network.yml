@@ -1,0 +1,13 @@
+---
+- name: Set rcconf network | FreeBSD
+  template:
+    src: roles/settings/templates/rc.conf.d_network.j2
+    dest: /etc/rc.conf.d/network
+    owner: root
+    group: 0
+    mode: 0644
+  with_items: "{{ rcconf_network }}"
+  notify: reload network
+  tags:
+    - set_rcconf_network
+

@@ -1,0 +1,21 @@
+---
+- name: Check running jails | FreeBSD
+  shell: jls -j {{ item.name }} -n name | cut -d= -f2
+  register: jls_result
+  ignore_errors: yes
+  with_items:
+    - "{{ jails }}"
+  changed_when: jls_result.stderr != ""
+  tags:
+    - set_jail
+    - set_jail_control
+
+- name: Restart jails | FreeBSD
+  shell: service jail onerestart {{ item.item.name }}
+  when: item.stderr != "" and item.item.enable == "yes"
+  with_items:
+    - "{{ jls_result.results }}"
+  tags:
+    - set_jail
+    - set_jail_control
+    

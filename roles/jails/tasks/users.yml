@@ -1,0 +1,48 @@
+---
+- name: Add jroot Users | FreeBSD
+  user:
+    name: "jroot_{{ item.name }}"
+    shell: "/bin/sh"
+    append: yes
+    state: present
+    password: "$6$Pj.QAy3vCeh6Pj.N$dhPQhZPRZdvdLdQdh8myIjJ3ICLxHy1LZbwDgUZrXm72oehuXUMRvIqVNoArpAYlZ8zzJNTO/BHWOPE33xzdt1"
+  with_items: "{{ jails }}"
+  when: item.enable == "yes" and item.remove != "yes"
+  tags:
+    - set_jail
+    - set_jail_users
+
+- name: Set ssh-key directory jroot Users | FreeBSD
+  file:
+    path: /home/jroot_{{ item.name }}/.ssh/
+    owner: jroot_{{ item.name }}
+    mode: 0700
+    state: directory
+  with_items: "{{ jails }}"
+  when: item.enable == "yes" and item.remove != "yes"
+  tags:
+    - set_jail
+    - set_jail_users
+
+- name: Set ssh-key jroot Users | FreeBSD
+  copy:
+    # src: /Users/bofh/.vagrant.d/insecure_public_key
+    src: /Users/bofh/Projects/tests/vagrant/11-BETA/jroot_ssh.pub
+    dest: /home/jroot_{{ item.name }}/.ssh/authorized_keys
+    owner: jroot_{{ item.name }}
+    mode: 0600
+  with_items: "{{ jails }}"
+  when: item.enable == "yes" and item.remove != "yes"
+  tags:
+    - set_jail
+    - set_jail_users
+
+- name: Remove jroot Users | FreeBSD
+  user:
+    name: "{{ item.name }}"
+    state: absent
+  with_items: "{{ jails }}"
+  when: item.enable == "no" and item.remove == "yes"
+  tags:
+    - set_jail
+    - set_jail_users

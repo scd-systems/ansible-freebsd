@@ -1,0 +1,109 @@
+---
+- name: Stop disabled jails | FreeBSD
+  shell: service jail onestop {{ item.name }}
+  with_items:
+    - "{{ jails }}"
+  when: item.enable != "yes"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Prepare install source directories | FreeBSD
+  file:
+    path: "{{ freebsd_local_cache }}/{{ item.arch }}/{{ item.release }}"
+    state: directory
+  with_items:
+    - "{{ jails }}"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Download freebsd install files base.txz | FreeBSD
+  command: fetch -o {{ freebsd_local_cache }}/{{ item.arch }}/{{ item.release }} {{ freebsd_url }}/{{ item.arch }}/{{ item.release }}/base.txz creates={{ freebsd_local_cache }}/{{ item.arch }}/{{ item.release }}/base.txz
+  with_items:
+    - "{{ jails }}"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Download freebsd install files lib32.txz | FreeBSD
+  command: fetch -o {{ freebsd_local_cache }}/{{ item.arch }}/{{ item.release }} {{ freebsd_url }}/{{ item.arch }}/{{ item.release }}/lib32.txz creates={{ freebsd_local_cache }}/{{ item.arch }}/{{ item.release }}/lib32.txz
+  with_items:
+    - "{{ jails }}"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Create Jail Directory - ZFS | FreeBSD
+  zfs:
+    name: "{{ jail_zpool }}/{{ item.name }}"
+    state: present
+    volsize: "{{ item.volsize }}"
+  with_items:
+    - "{{ jails }}"
+  when: item.fs == "zfs" and item.enable == "yes"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Remove Jail Directory - ZFS | FreeBSD
+  zfs:
+    name: "{{ jail_zpool }}/{{ item.name }}"
+    state: absent
+  with_items:
+    - "{{ jails }}"
+  when: item.fs == "zfs" and item.remove == "yes"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Create Jail Directory - UFS | FreeBSD
+  file:
+    path: "{{ jail_rootpath }}/{{ item.name }}"
+    owner: root
+    group: 0
+    mode: 0755
+    state: directory
+  with_items:
+    - "{{ jails }}"
+  when: item.fs == "ufs" and item.enable == "yes"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Remove Jail Directory Unset Flags - UFS | FreeBSD
+  command: chflags -R noschg {{ jail_rootpath }}/{{ item.name }}
+  ignore_errors: yes
+  with_items:
+    - "{{ jails }}"
+  when: item.fs == "ufs" and item.remove == "yes"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Remove Jail Directory - UFS | FreeBSD
+  file:
+    path: "{{ jail_rootpath }}/{{ item.name }}"
+    state: absent
+  with_items:
+    - "{{ jails }}"
+  when: item.fs == "ufs" and item.remove == "yes"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Create Jails - extract base.txz | FreeBSD
+  command: tar -C {{ jail_rootpath }}/{{ item.name }} -xf {{ freebsd_local_cache }}/{{ item.arch }}/{{ item.release }}/base.txz creates={{ jail_rootpath }}/{{ item.name }}/usr/bin/su
+  with_items: "{{ jails }}"
+  when: item.enable == "yes"
+  tags:
+    - set_jail
+    - set_jail_directories
+
+- name: Create Jails - extract lib32.txz | FreeBSD
+  command: tar -C {{ jail_rootpath }}/{{ item.name }} -xf {{ freebsd_local_cache }}/{{ item.arch }}/{{ item.release }}/lib32.txz creates={{ jail_rootpath }}/{{ item.name }}//libexec/ld-elf32.so.1
+  with_items: "{{ jails }}"
+  when: item.enable == "yes"
+  tags:
+    - set_jail
+    - set_jail_directories

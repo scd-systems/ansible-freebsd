@@ -1,0 +1,12 @@
+---
+- name: Set resolv.conf | FreeBSD
+  template:
+    src: roles/settings/templates/resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: 0
+    mode: 0644
+  with_items: "{{ resolvconf }}"
+  tags:
+    - set_resolvconf
+

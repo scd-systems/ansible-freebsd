@@ -1,0 +1,20 @@
+---
+- name: Start Jail
+  service:
+    name: jail
+    state: started
+
+- name: Stop Jail
+  service:
+    name: jail
+    state: stopped
+
+- name: Restart Jail
+  service:
+    name: jail
+    state: restarted
+
+- name: restart sshd
+  service:
+    name: sshd
+    state: restarted

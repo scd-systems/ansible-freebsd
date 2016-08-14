@@ -1,0 +1,5 @@
+# hosts managed by Ansible
+
+{% for key in local_host_entry %}
+{{ key.name }} {{ key.value }}
+{% endfor %}

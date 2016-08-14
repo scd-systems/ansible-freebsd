@@ -1,0 +1,19 @@
+#!/bin/sh
+# jansible.sh managed by Ansible
+
+#
+# Jail Exec wrapper script for Ansible to manage jails from Remote
+#
+
+if [ "_${2}" == "_/bin/sh" ] ; then
+	eval sudo jexec ${@}
+else
+  x=0;
+  for i in $@; do
+          if [ "_${x}" != "_0" ] ; then
+                  cmd_string="$cmd_string $i"
+          fi
+          x="`echo "$x+1"|bc`"
+  done;
+	eval sudo jexec ${1} /bin/sh -c \'${cmd_string}\'
+fi

@@ -1,0 +1,14 @@
+---
+freebsd_url: http://ftp.freebsd.org/pub/FreeBSD/releases/
+freebsd_local_cache: /usr/rel
+
+jail_interface: lo1
+jail_rootpath: /jails
+jail_zpool: jails
+
+jails:
+  - { name: "app_jail1", enable: "yes", remove: "no", interface: "{{ jail_interface }}", ip: "127.0.1.10", arch: "amd64", release: "9.3-RELEASE", fs: "ufs" }
+  - { name: "app_jail2", enable: "yes", remove: "no", interface: "{{ jail_interface }}", ip: "127.0.1.11", arch: "amd64", release: "10.3-RELEASE", fs: "ufs" }
+  - { name: "app_jail3", enable: "yes", remove: "no", interface: "{{ jail_interface }}", ip: "127.0.1.12", arch: "amd64", release: "10.1-RELEASE", fs: "ufs" }
+  - { name: "app_jail4", enable: "yes", remove: "no", interface: "{{ jail_interface }}", ip: "127.0.1.13", arch: "amd64", release: "10.2-RELEASE", fs: "ufs" }
+  - { name: "app_jail5", enable: "yes", remove: "no", interface: "{{ jail_interface }}", ip: "127.0.1.14", arch: "amd64", release: "10.3-RELEASE", fs: "ufs" }

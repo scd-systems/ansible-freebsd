@@ -1,0 +1,37 @@
+---
+- name: Add Groups | FreeBSD
+  user:
+    name: "{{ item.name }}"
+    state: present
+  when: item.enable == "yes"
+  with_items: "{{ local_groups }}"
+
+- name: Remove Groups | FreeBSD
+  user:
+    name: "{{ item.name }}"
+    state: absent
+    remove: yes
+  with_items: "{{ local_groups }}"
+  when: item.enable != "yes"
+
+- name: Add User | FreeBSD
+  user:
+    name: "{{ item.name }}"
+    shell: "{{ item.shell }}"
+    groups: "{{ item.groups }}"
+    append: yes
+    createhome: "{{ item.createhome }}"
+    comment: "{{ item.comment }}"
+    state: present
+    system: "{{ item.system }}"
+    uid: "{{ item.uid }}"
+  with_items: "{{ local_users }}"
+  when: item.enable == "yes"
+
+- name: Remove User | FreeBSD
+  user:
+    name: "{{ item.name }}"
+    state: absent
+    remove: yes
+  with_items: "{{ local_users }}"
+  when: item.enable  != "yes"

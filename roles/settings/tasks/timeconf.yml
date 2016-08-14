@@ -1,0 +1,11 @@
+---
+- name: Set Timezone | FreeBSD
+  copy:
+    src: /usr/share/zoneinfo/{{ timezone }}
+    dest: /etc/localtime
+    owner: root
+    group: 0
+    mode: 0444
+  tags:
+    - set_timezone
+

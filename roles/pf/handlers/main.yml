@@ -1,0 +1,13 @@
+---
+- name: restart_pf
+  service:
+    name: pf
+    state: restarted
+
+- name: restart_pflog
+  service:
+    name: pflog
+    state: restarted
+
+- name: reload_pf
+  command: pfctl -f /etc/pf.conf

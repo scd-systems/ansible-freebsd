@@ -1,0 +1,6 @@
+---
+local_users:
+  - { name: "bofh", enable: "yes", uid: "500", shell: "/bin/sh", groups: "local_admin", createhome: "yes", system: "no", comment: "" }
+
+local_groups:
+  - { name: "local_admin", enable: "yes" }
