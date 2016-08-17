@@ -1,5 +1,4 @@
 ---
-# Defaults if no host_vars file exists
 domain: local.domain
 timezone: Europe/Berlin
 dns1: 10.0.2.3
@@ -7,11 +6,8 @@ dns2: 10.0.2.4
 securelevel: -1
 securelevel_enable: NO
 
-add_interfaces: lo1
-ifconfig_lo1: 127.0.1.1/24
-
 local_host_entry:
-  - { name: "127.0.0.1", value: "localhost localhost.local {{ hostname }}" }
+  - { name: "127.0.1.1", value: "localhost localhost.local {{ hostname }}" }
 
 rcconf:
   - { name: "sshd_enable", value: "YES" }
@@ -20,17 +16,6 @@ rcconf:
   - { name: "kern_securelevel", value: "{{ securelevel }}" }
   - { name: "kern_securelevel_enable", value: "{{ securelevel_enable }}" }
   - { name: "jail_parallel_start", value: "YES" }
-
-rcconf_network:
-  - { name: "ifconfig_DEFAULT", value: "SYNCDHCP" }
-  - { name: "cloned_interfaces", value: "{{ add_interfaces }} " }
-  - { name: "ifconfig_lo1", value: "{{ ifconfig_lo1 }}" }
-
-# Default jail conf
-rcconf_jail:
-  - { name: "sendmail_enable", value: "NONE" }
-  - { name: "syslog_enable", value: "-ss" }
-  - { name: "rpcbind_enable", value: "NO" }
 
 sysctl:
   - { name: "kern.securelevel", value: "{{ securelevel }}" }

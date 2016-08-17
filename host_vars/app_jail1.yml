@@ -1,0 +1,25 @@
+---
+domain: local.domain
+timezone: Europe/Berlin
+dns1: 10.0.2.3
+dns2: 10.0.2.4
+securelevel: -1
+securelevel_enable: NO
+
+local_host_entry:
+  - { name: "127.0.1.1", value: "localhost localhost.local {{ hostname }}" }
+
+rcconf:
+  - { name: "sendmail_enable", value: "NONE" }
+  - { name: "syslog_enable", value: "-ss" }
+  - { name: "rpcbind_enable", value: "NO" }
+
+sysctl:
+  - { name: "kern.securelevel", value: "{{ securelevel }}" }
+  - { name: "security.bsd.see_other_uids", value: "0" }
+  - { name: "security.bsd.see_other_gids", value: "0", unset: "yes" }
+
+resolvconf:
+  - { line: "search {{ domain }}" }
+  - { line: "nameserver {{ dns1 }}" }
+  - { line: "nameserver {{ dns2 }}" }

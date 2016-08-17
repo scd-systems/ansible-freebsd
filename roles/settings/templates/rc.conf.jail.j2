@@ -1,0 +1,5 @@
+# rc.conf for jail managed by Ansible
+
+{% for key in rcconf_jail %}
+{{ key.name }}={{ key.value }}
+{% endfor %}
