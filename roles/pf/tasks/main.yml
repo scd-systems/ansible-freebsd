@@ -1,4 +1,11 @@
 ---
+- local_action: stat path=host_vars/{{ hostname }}.yml
+  register: hostvar
+  become: no
+
+- include_vars: host_vars/{{ hostname }}.yml
+  when: hostvar.stat.exists
+
 - name: Check file rc.conf.d/pf | FreeBSD
   stat:
     path: /etc/rc.conf.d/pf
@@ -56,7 +63,6 @@
     owner: root
     group: 0
     mode: 0644
-  with_items: "{{ pf_settings }}"
   notify:
     - reload_pf
   tags:

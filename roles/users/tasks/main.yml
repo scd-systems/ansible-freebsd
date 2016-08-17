@@ -1,4 +1,11 @@
 ---
+- local_action: stat path=host_vars/{{ hostname }}.yml
+  register: hostvar
+  become: no
+
+- include_vars: host_vars/{{ hostname }}.yml
+  when: hostvar.stat.exists
+
 - name: Add Groups | FreeBSD
   user:
     name: "{{ item.name }}"
